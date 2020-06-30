@@ -75,6 +75,9 @@ if [ $install_required = true ]; then
   unzip -q "foundryvtt-${FOUNDRY_VERSION}.zip" 'resources/*'
   echo "Modifying main.js to enable plutonium functionality"
   sed -e '/require("init")(process.argv, global.paths, initLogging);/ {' -e 'r plut_mod.js' -e 'd' -e '}' -i resources/app/main.js
+  cp plutonium/server/plutonium-backend.js ./resources/app/
+  mkdir -p /data/Data/modules/ && cp -r plutonium/ /data/Data/modules
+  mkdir -p -m777 /data/Data/assets/art/
   rm "foundryvtt-${FOUNDRY_VERSION}.zip"
 
   if [ -f license.json ] && [ ! -f /data/Config/license.json ]; then

@@ -28,6 +28,9 @@ RUN if [ -n "${FOUNDRY_USERNAME}" ] && [ -n "${FOUNDRY_PASSWORD}" ]; then \
       wget -O ${ARCHIVE} "${FOUNDRY_RELEASE_URL}" && \
       unzip -d dist ${ARCHIVE} 'resources/*'; \
     fi
+    
+RUN wget https://get.5e.tools/plutonium/plutonium.zip && \
+    unzip plutonium.zip -d dist -q
 
 FROM node:12-alpine as final-stage
 
@@ -61,7 +64,6 @@ WORKDIR ${FOUNDRY_HOME}
 
 COPY --from=optional-release-stage /root/dist/ .
 COPY src/entrypoint.sh src/package.json src/set_password.js src/authenticate.js src/plut_mod.js ./
-COPY src/plutonium-backend.js ./resources/app/
 RUN npm install && echo ${VERSION} > image_version.txt
 
 VOLUME ["/data"]
