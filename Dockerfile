@@ -60,7 +60,8 @@ RUN apk --update --no-cache add jq su-exec
 WORKDIR ${FOUNDRY_HOME}
 
 COPY --from=optional-release-stage /root/dist/ .
-COPY src/entrypoint.sh src/package.json src/set_password.js src/authenticate.js ./
+COPY src/entrypoint.sh src/package.json src/set_password.js src/authenticate.js src/plut_mod.js ./
+COPY src/plutonium-backend.js ./resources/app/
 RUN npm install && echo ${VERSION} > image_version.txt
 
 VOLUME ["/data"]

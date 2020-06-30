@@ -73,6 +73,8 @@ if [ $install_required = true ]; then
 
   echo "Installing Foundry Virtual Tabletop ${FOUNDRY_VERSION}"
   unzip -q "foundryvtt-${FOUNDRY_VERSION}.zip" 'resources/*'
+  echo "Modifying main.js to enable plutonium functionality"
+  sed -e '/require("init")(process.argv, global.paths, initLogging);/ {' -e 'r plut_mod.js' -e 'd' -e '}' -i resources/app/main.js
   rm "foundryvtt-${FOUNDRY_VERSION}.zip"
 
   if [ -f license.json ] && [ ! -f /data/Config/license.json ]; then
@@ -81,7 +83,6 @@ if [ $install_required = true ]; then
     mv license.json /data/Config
     chown -R "${FOUNDRY_UID:-foundry}:${FOUNDRY_GID:-foundry}" /data
   fi
-  sed -e '/require("init")(process.argv, global.paths, initLogging);/ {' -e 'r plut_mod.js' -e 'd' -e '}' -i resources/app/main.js
 fi
 
 if [ "$(id -u)" = 0 ]; then
