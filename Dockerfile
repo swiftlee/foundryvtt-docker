@@ -20,17 +20,17 @@ COPY src/package.json src/authenticate.js ./
 # .placeholder file to mitigate https://github.com/moby/moby/issues/37965
 RUN mkdir dist && touch dist/.placeholder
 RUN if [ -n "${FOUNDRY_USERNAME}" ] && [ -n "${FOUNDRY_PASSWORD}" ]; then \
-      npm install && \
-      s3_url=$(./authenticate.js "${FOUNDRY_USERNAME}" "${FOUNDRY_PASSWORD}" "${FOUNDRY_VERSION}") && \
-      wget -O ${ARCHIVE} "${s3_url}" && \
-      unzip -d dist ${ARCHIVE} 'resources/*'; \
-    elif [ -n "${FOUNDRY_RELEASE_URL}" ]; then \
-      wget -O ${ARCHIVE} "${FOUNDRY_RELEASE_URL}" && \
-      unzip -d dist ${ARCHIVE} 'resources/*'; \
-    fi
-    
+  npm install && \
+  s3_url=$(./authenticate.js "${FOUNDRY_USERNAME}" "${FOUNDRY_PASSWORD}" "${FOUNDRY_VERSION}") && \
+  wget -O ${ARCHIVE} "${s3_url}" && \
+  unzip -d dist ${ARCHIVE} 'resources/*'; \
+  elif [ -n "${FOUNDRY_RELEASE_URL}" ]; then \
+  wget -O ${ARCHIVE} "${FOUNDRY_RELEASE_URL}" && \
+  unzip -d dist ${ARCHIVE} 'resources/*'; \
+  fi
+
 RUN wget https://get.5e.tools/plutonium/plutonium.zip && \
-    unzip plutonium.zip -d dist -q
+  unzip plutonium.zip -d dist -q
 
 FROM node:12-alpine as final-stage
 
@@ -68,6 +68,6 @@ RUN npm install && echo ${VERSION} > image_version.txt
 
 VOLUME ["/data"]
 
-EXPOSE 30000/TCP
+EXPOSE 30000/tcp
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["resources/app/main.js", "--port=30000", "--headless", "--dataPath=/data"]
